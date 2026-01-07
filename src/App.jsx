@@ -26,19 +26,8 @@ function App() {
             {/* Scene content based on currentScene */}
             {currentScene === SCENES.LOADING && <LoadingScene />}
 
-            {currentScene === SCENES.CLOUD_JOURNEY && <CloudJourneyScene />}
-
-            {/* Placeholder for Castle Gate scene */}
-            {currentScene === SCENES.CASTLE_GATE && (
-              <group>
-                <color attach="background" args={['#1a0a2e']} />
-                <ambientLight intensity={0.5} />
-                <mesh>
-                  <boxGeometry args={[2, 2, 2]} />
-                  <meshStandardMaterial color="#ffd700" />
-                </mesh>
-              </group>
-            )}
+            {/* Cloud Journey now includes Castle Gate */}
+            {(currentScene === SCENES.CLOUD_JOURNEY || currentScene === SCENES.CASTLE_GATE) && <CloudJourneyScene />}
           </Suspense>
         </Canvas>
       </div>

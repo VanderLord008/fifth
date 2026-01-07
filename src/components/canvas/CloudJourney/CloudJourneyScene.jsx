@@ -1,93 +1,140 @@
 /**
- * ☁️ Cloud Journey Scene - Main orchestrator for the cloud flight experience
- * Combines gradient sky, volumetric clouds, and camera animation
+ * ☁️ Cloud Journey Scene - FRESH START
+ * Simple scene: clouds + castle + camera flight
  */
 
-import { useRef, useState, useCallback } from 'react';
-import { useThree } from '@react-three/fiber';
-import { Fog } from '@react-three/drei';
+import { useRef, useState, useCallback, useEffect, Suspense } from 'react';
+import { useThree, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import { useControls } from 'leva';
 
 import usePortfolioStore, { SCENES } from '../../../stores/portfolioStore';
 
-import GradientSky from './GradientSky';
-import VolumetricClouds from './VolumetricClouds';
-import CameraPath from './CameraPath';
+import MysticalSky from './MysticalSky';
+import GLBCloudField from './GLBCloudField';
 import MagicalParticles from '../../effects/MagicalParticles';
 
+// Import Castle Gate components
+import {
+    FloatingCandles,
+    MarmaladeCat,
+    ParchmentBanner,
+    GroundMist,
+    PotterCastle,
+    PotterIsland,
+    PotterGate
+} from '../CastleGate';
+
+// Simple camera that flies forward and stops
+function FlightCamera({ duration = 6, onComplete }) {
+    const { camera } = useThree();
+    const progress = useRef(0);
+    const completed = useRef(false);
+
+    useEffect(() => {
+        // Start position
+        camera.position.set(0, 5, 0);
+        camera.lookAt(0, 5, 50);
+    }, [camera]);
+
+    useFrame((state, delta) => {
+        if (completed.current) return;
+
+        progress.current += delta / duration;
+        const t = Math.min(progress.current, 1);
+
+        // Simple smooth easing
+        const eased = t * t * (3 - 2 * t);
+
+        // Fly from z=0 to z=230 (castle is at z=260)
+        const z = eased * 230;
+        const y = 5 + Math.sin(t * Math.PI) * 2;
+
+        camera.position.set(0, y, z);
+        camera.lookAt(0, 4, z + 50);
+
+        if (t >= 1 && !completed.current) {
+            completed.current = true;
+            // Final position looking at castle (z=260)
+            camera.position.set(0, 5, 230);
+            camera.lookAt(0, 3, 260);
+            if (onComplete) onComplete();
+        }
+    });
+
+    return null;
+}
+
 export default function CloudJourneyScene() {
-    const { scene } = useThree();
     const setScene = usePortfolioStore((state) => state.setScene);
     const [journeyComplete, setJourneyComplete] = useState(false);
 
-    // Handle journey completion
+    // DEBUG: Castle position and rotation
+    const castle = useControls('Castle', {
+        posX: { value: 0, min: -50, max: 50, step: 1 },
+        posY: { value: 1, min: -20, max: 20, step: 1 },
+        posZ: { value: 250, min: 200, max: 350, step: 5 },
+        rotX: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 },
+        rotY: { value: Math.PI, min: -Math.PI, max: Math.PI, step: 0.1 },
+        rotZ: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 },
+    });
+
     const handleJourneyComplete = useCallback(() => {
         setJourneyComplete(true);
+    }, []);
 
-        // Transition to castle gate scene
-        setTimeout(() => {
-            setScene(SCENES.CASTLE_GATE);
-        }, 500);
+    const handleEnter = useCallback(() => {
+        setScene(SCENES.GREAT_HALL);
     }, [setScene]);
 
     return (
         <group>
-            {/* Gradient Sky Background */}
-            <GradientSky
-                topColor="#0f0a1e"      // Deep night purple
-                middleColor="#ff7043"   // Warm sunset orange
-                bottomColor="#1a0f2e"   // Dark purple
-                exponent={0.5}
-            />
+            {/* Sky */}
+            <MysticalSky />
 
-            {/* Fog for depth and atmosphere */}
-            <fog attach="fog" args={['#2d1b4e', 20, 150]} />
+            {/* Fog */}
+            <fog attach="fog" args={['#1a1a2e', 50, 350]} />
 
-            {/* Volumetric Cloud System */}
-            <VolumetricClouds />
+            {/* Clouds */}
+            <Suspense fallback={null}>
+                <GLBCloudField />
+            </Suspense>
 
-            {/* Camera Flight Animation */}
-            <CameraPath
-                duration={10}
-                startDelay={0.5}
-                onJourneyComplete={handleJourneyComplete}
-            />
+            {/* Castle - at the end of the journey */}
+            <group
+                position={[castle.posX, castle.posY, castle.posZ]}
+                rotation={[castle.rotX, castle.rotY, castle.rotZ]}
+            >
+                <GroundMist />
+                <PotterIsland position={[0, -5, 0]} scale={1.5} />
+                <PotterCastle position={[0, 2, 0]} />
+                <PotterGate position={[0, 2, 3]} onOpen={handleEnter} />
+                <FloatingCandles />
+                <MarmaladeCat position={[4, 2, 4]} onClick={handleEnter} />
+                <ParchmentBanner
+                    position={[-4, 3, 4]}
+                    name="Vaibhav Sharma"
+                    title="Web Developer"
+                    onClick={handleEnter}
+                />
+            </group>
 
-            {/* Magical sparkle particles */}
-            <MagicalParticles
-                count={100}
-                radius={50}
-                color="#ffd700"
-                size={0.08}
-                speed={0.3}
-                opacity={0.7}
-            />
+            {/* Camera flight */}
+            <FlightCamera duration={6} onComplete={handleJourneyComplete} />
 
-            {/* Blue accent particles */}
-            <MagicalParticles
-                count={60}
-                radius={40}
-                color="#00d4ff"
-                size={0.06}
-                speed={0.2}
-                opacity={0.5}
-            />
+            {/* OrbitControls - only after journey */}
+            {journeyComplete && (
+                <OrbitControls
+                    target={[castle.posX, castle.posY + 3, castle.posZ]}
+                    enableDamping
+                    dampingFactor={0.05}
+                />
+            )}
 
-            {/* Ambient lighting */}
-            <ambientLight intensity={0.4} color="#ffeedd" />
-
-            {/* Sun/horizon glow light */}
-            <directionalLight
-                position={[0, 0, -100]}
-                intensity={1}
-                color="#ff8c42"
-            />
-
-            {/* Cool sky light from above */}
-            <directionalLight
-                position={[0, 50, 0]}
-                intensity={0.3}
-                color="#6366f1"
-            />
+            {/* Lighting */}
+            <ambientLight intensity={0.4} color="#c7d2fe" />
+            <directionalLight position={[10, 40, 50]} intensity={1.2} color="#e0e7ff" />
+            <pointLight position={[0, 10, 280]} intensity={1.5} color="#6366f1" distance={100} />
         </group>
     );
 }

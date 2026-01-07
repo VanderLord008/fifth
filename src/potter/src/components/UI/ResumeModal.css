@@ -1,0 +1,312 @@
+/* ResumeModal.css - Parchment-style resume overlay */
+
+.resume-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.resume-modal {
+    background: linear-gradient(135deg, #f4e4c1 0%, #e8d4a8 50%, #d4c494 100%);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    border: 3px solid #8b7355;
+    animation: scrollUnroll 0.5s ease-out;
+}
+
+@keyframes scrollUnroll {
+    from {
+        transform: scaleY(0.1) translateY(-50%);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleY(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Parchment texture overlay */
+.resume-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: 8px;
+}
+
+.resume-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #8b4513;
+    color: #f4e4c1;
+    border: 2px solid #5a2d0a;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.resume-close-btn:hover {
+    background: #a0522d;
+    transform: scale(1.1);
+}
+
+.resume-header {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #8b7355;
+    margin-bottom: 1.5rem;
+}
+
+.resume-name {
+    font-family: 'Cinzel', 'Times New Roman', serif;
+    font-size: 2.5rem;
+    color: #4a3520;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.resume-title {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.2rem;
+    color: #6a5540;
+    margin: 0;
+    font-style: italic;
+}
+
+.header-decoration {
+    color: #8b7355;
+    margin-top: 0.5rem;
+    letter-spacing: 1rem;
+}
+
+/* Navigation Tabs */
+.resume-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    background: transparent;
+    border: 2px solid #8b7355;
+    color: #5a4030;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-tab:hover {
+    background: rgba(139, 115, 85, 0.2);
+}
+
+.nav-tab.active {
+    background: #8b7355;
+    color: #f4e4c1;
+}
+
+/* Content Sections */
+.resume-content {
+    min-height: 250px;
+    padding: 1rem 0;
+}
+
+.section-about p {
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4a3520;
+    white-space: pre-line;
+}
+
+/* Skills Section */
+.section-skills {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.skill-category h3 {
+    font-family: 'Cinzel', serif;
+    color: #5a4030;
+    margin: 0 0 0.8rem 0;
+    font-size: 1.1rem;
+}
+
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-tag {
+    background: linear-gradient(135deg, #8b4513, #a0522d);
+    color: #f4e4c1;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* Experience Section */
+.section-experience {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.experience-item {
+    padding: 1rem;
+    background: rgba(139, 115, 85, 0.1);
+    border-left: 3px solid #8b7355;
+    border-radius: 0 4px 4px 0;
+}
+
+.experience-item h3 {
+    font-family: 'Cinzel', serif;
+    color: #4a3520;
+    margin: 0 0 0.3rem 0;
+    font-size: 1.1rem;
+}
+
+.experience-item .company {
+    color: #6a5540;
+    font-weight: 600;
+    margin: 0.2rem 0;
+}
+
+.experience-item .period {
+    color: #8b7355;
+    font-size: 0.9rem;
+    font-style: italic;
+    margin: 0.2rem 0 0.5rem 0;
+}
+
+.experience-item .description {
+    color: #5a4030;
+    margin: 0;
+}
+
+/* Contact Section */
+.section-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #8b7355;
+}
+
+.contact-item .label {
+    font-weight: 600;
+    color: #5a4030;
+    min-width: 80px;
+}
+
+.contact-item .value {
+    color: #8b4513;
+}
+
+/* Footer */
+.resume-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #8b7355;
+}
+
+.download-btn {
+    background: linear-gradient(135deg, #4a0080, #6a0dad);
+    color: #ffd700;
+    border: 2px solid #ffd700;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    background: linear-gradient(135deg, #6a0dad, #8b00cf);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+}
+
+/* Scrollbar styling */
+.resume-modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.resume-modal::-webkit-scrollbar-track {
+    background: #d4c494;
+    border-radius: 4px;
+}
+
+.resume-modal::-webkit-scrollbar-thumb {
+    background: #8b7355;
+    border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .resume-modal {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .resume-name {
+        font-size: 1.8rem;
+    }
+
+    .nav-tab {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+}

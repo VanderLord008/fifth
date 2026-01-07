@@ -1,5 +1,7 @@
 // Cloud Journey Scene Exports
 export { default as CloudJourneyScene } from './CloudJourneyScene';
-export { default as GradientSky } from './GradientSky';
-export { default as VolumetricClouds } from './VolumetricClouds';
-export { default as CameraPath } from './CameraPath';
+export { default as MysticalSky } from './MysticalSky';
+export { default as AtmosClouds } from './AtmosClouds';
+export { default as DreamySky } from './DreamySky';
+export { default as DreamyClouds } from './DreamyClouds';
+
