@@ -12,7 +12,7 @@ import usePortfolioStore, { SCENES } from '../../../stores/portfolioStore';
 import FloatingCastle from './FloatingCastle';
 import GateArchway from './GateArchway';
 import FloatingCandles from './FloatingCandles';
-import MarmaladeCat from './MarmaladeCat';
+import PirateCat from './PirateCat';
 import ParchmentBanner from './ParchmentBanner';
 import GroundMist from './GroundMist';
 
@@ -58,16 +58,16 @@ export default function CastleGateScene() {
             {/* Floating candles */}
             <FloatingCandles />
 
-            {/* Marmalade the cat mascot */}
-            <MarmaladeCat
+            {/* Pirate cat mascot */}
+            <PirateCat
                 position={[-4, -1.5, 4]}
+                scale={2}
                 onClick={handleEnter}
             />
 
-            {/* Parchment banner with info */}
+            {/* Parchment banner with info - position controlled by Leva debug panel */}
             <ParchmentBanner
-                position={[4, 1.5, 4]}
-                name="Vaibhav Sharma"
+                name="Vaibhab Tiwari"
                 title="Web Developer & 3D Enthusiast"
                 tagline="Creating magical digital experiences"
                 onClick={handleEnter}

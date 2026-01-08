@@ -56,34 +56,51 @@ function CloudModel({
 }
 
 export default function GLBCloudField() {
-    // Generate many clouds spread throughout a large environment
+    // Helper: check if position is in the camera's flight path
+    // Camera flies at x≈0, y≈5, from z=0 to z=230
+    const isInFlightPath = (x, y, z) => {
+        const pathWidth = 20;  // How wide to clear (x axis)
+        const pathTop = 15;    // Clear up to this height
+        const pathBottom = -5; // Clear down to this level
+        const pathEnd = 240;   // Where the path ends
+
+        return (
+            Math.abs(x) < pathWidth &&
+            y > pathBottom && y < pathTop &&
+            z > -10 && z < pathEnd
+        );
+    };
+
+    // Generate clouds spread throughout, avoiding the flight path
     const clouds = useMemo(() => {
         const data = [];
 
-        // Close clouds on sides - flanking the flight path (not in the way)
+        // Side clouds - flanking the flight path
         for (let i = 0; i < 16; i++) {
             const side = i % 2 === 0 ? -1 : 1;
-            data.push({
-                position: [
-                    side * (25 + Math.random() * 20), // Pushed further to sides
-                    -10 + Math.random() * 25,
-                    -40 + i * 25
-                ],
-                scale: 4 + Math.random() * 3,
-                rotation: [0, Math.random() * Math.PI * 2, 0],
-                opacity: 1.0,
-                id: `close-${i}`
-            });
+            const x = side * (30 + Math.random() * 25);
+            const y = -10 + Math.random() * 25;
+            const z = -40 + i * 25;
+
+            if (!isInFlightPath(x, y, z)) {
+                data.push({
+                    position: [x, y, z],
+                    scale: 4 + Math.random() * 3,
+                    rotation: [0, Math.random() * Math.PI * 2, 0],
+                    opacity: 1.0,
+                    id: `close-${i}`
+                });
+            }
         }
 
-        // Upper cloud layer - above the camera path
+        // Upper cloud layer - high above camera
         for (let i = 0; i < 20; i++) {
+            const x = (Math.random() - 0.5) * 200;
+            const y = 20 + Math.random() * 25;
+            const z = -50 + i * 20 + Math.random() * 15;
+
             data.push({
-                position: [
-                    (Math.random() - 0.5) * 200,
-                    18 + Math.random() * 20, // Higher up
-                    -50 + i * 20 + Math.random() * 15
-                ],
+                position: [x, y, z],
                 scale: 5 + Math.random() * 4,
                 rotation: [0, Math.random() * Math.PI * 2, 0],
                 opacity: 1.0,
@@ -91,14 +108,14 @@ export default function GLBCloudField() {
             });
         }
 
-        // Lower cloud layer - below the camera path
+        // Lower cloud layer - below camera
         for (let i = 0; i < 18; i++) {
+            const x = (Math.random() - 0.5) * 180;
+            const y = -20 - Math.random() * 15;
+            const z = -30 + i * 22 + Math.random() * 10;
+
             data.push({
-                position: [
-                    (Math.random() - 0.5) * 180,
-                    -15 - Math.random() * 15, // Below
-                    -30 + i * 22 + Math.random() * 10
-                ],
+                position: [x, y, z],
                 scale: 5 + Math.random() * 4,
                 rotation: [0, Math.random() * Math.PI * 2, 0],
                 opacity: 1.0,
@@ -136,13 +153,13 @@ export default function GLBCloudField() {
             });
         }
 
-        // Distant background clouds - very far
+        // Distant background clouds - behind the castle
         for (let i = 0; i < 15; i++) {
             data.push({
                 position: [
                     (Math.random() - 0.5) * 250,
                     Math.random() * 40 - 10,
-                    250 + i * 30 + Math.random() * 20
+                    280 + i * 30 + Math.random() * 20
                 ],
                 scale: 8 + Math.random() * 6,
                 rotation: [0, Math.random() * Math.PI * 2, 0],
@@ -151,21 +168,23 @@ export default function GLBCloudField() {
             });
         }
 
-        // Extra scattered clouds for density
+        // Scattered clouds - but not in the path
         for (let i = 0; i < 15; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const distance = 40 + Math.random() * 60;
-            data.push({
-                position: [
-                    Math.cos(angle) * distance,
-                    -12 + Math.random() * 35,
-                    Math.random() * 350 - 30
-                ],
-                scale: 4 + Math.random() * 4,
-                rotation: [0, Math.random() * Math.PI * 2, 0],
-                opacity: 1.0,
-                id: `scatter-${i}`
-            });
+            const distance = 50 + Math.random() * 60;
+            const x = Math.cos(angle) * distance;
+            const y = -12 + Math.random() * 35;
+            const z = Math.random() * 350 - 30;
+
+            if (!isInFlightPath(x, y, z)) {
+                data.push({
+                    position: [x, y, z],
+                    scale: 4 + Math.random() * 4,
+                    rotation: [0, Math.random() * Math.PI * 2, 0],
+                    opacity: 1.0,
+                    id: `scatter-${i}`
+                });
+            }
         }
 
         return data;

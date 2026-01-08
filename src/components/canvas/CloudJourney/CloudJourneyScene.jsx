@@ -6,7 +6,6 @@
 import { useRef, useState, useCallback, useEffect, Suspense } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useControls } from 'leva';
 
 import usePortfolioStore, { SCENES } from '../../../stores/portfolioStore';
 
@@ -17,12 +16,13 @@ import MagicalParticles from '../../effects/MagicalParticles';
 // Import Castle Gate components
 import {
     FloatingCandles,
-    MarmaladeCat,
+    PirateCat,
     ParchmentBanner,
     GroundMist,
     PotterCastle,
     PotterIsland,
-    PotterGate
+    PotterGate,
+    MagicalScroll
 } from '../CastleGate';
 
 // Simple camera that flies forward and stops
@@ -46,18 +46,18 @@ function FlightCamera({ duration = 6, onComplete }) {
         // Simple smooth easing
         const eased = t * t * (3 - 2 * t);
 
-        // Fly from z=0 to z=230 (castle is at z=260)
+        // Fly from z=0 to z=230 (castle is at z=250)
         const z = eased * 230;
-        const y = 5 + Math.sin(t * Math.PI) * 2;
+        const y = 5 + Math.sin(eased * Math.PI) * 2;
 
         camera.position.set(0, y, z);
-        camera.lookAt(0, 4, z + 50);
+
+        // Interpolate look-ahead distance from 50 to 20 (so at end we look at z=250)
+        const lookAhead = 50 - 30 * eased;
+        camera.lookAt(0, 4, z + lookAhead);
 
         if (t >= 1 && !completed.current) {
             completed.current = true;
-            // Final position looking at castle (z=260)
-            camera.position.set(0, 5, 230);
-            camera.lookAt(0, 3, 260);
             if (onComplete) onComplete();
         }
     });
@@ -65,19 +65,15 @@ function FlightCamera({ duration = 6, onComplete }) {
     return null;
 }
 
+
 export default function CloudJourneyScene() {
     const setScene = usePortfolioStore((state) => state.setScene);
     const [journeyComplete, setJourneyComplete] = useState(false);
+    const [scrollOpen, setScrollOpen] = useState(false);
 
-    // DEBUG: Castle position and rotation
-    const castle = useControls('Castle', {
-        posX: { value: 0, min: -50, max: 50, step: 1 },
-        posY: { value: 1, min: -20, max: 20, step: 1 },
-        posZ: { value: 250, min: 200, max: 350, step: 5 },
-        rotX: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 },
-        rotY: { value: Math.PI, min: -Math.PI, max: Math.PI, step: 0.1 },
-        rotZ: { value: 0, min: -Math.PI, max: Math.PI, step: 0.1 },
-    });
+    // Castle position (hardcoded now, no debugger)
+    const castlePos = { x: 0, y: 1, z: 250 };
+    const castleRot = { x: 0, y: Math.PI, z: 0 };
 
     const handleJourneyComplete = useCallback(() => {
         setJourneyComplete(true);
@@ -86,6 +82,16 @@ export default function CloudJourneyScene() {
     const handleEnter = useCallback(() => {
         setScene(SCENES.GREAT_HALL);
     }, [setScene]);
+
+    // Open scroll when banner button is clicked
+    const handleOpenScroll = useCallback(() => {
+        setScrollOpen(true);
+    }, []);
+
+    // Close scroll
+    const handleCloseScroll = useCallback(() => {
+        setScrollOpen(false);
+    }, []);
 
     return (
         <group>
@@ -102,39 +108,39 @@ export default function CloudJourneyScene() {
 
             {/* Castle - at the end of the journey */}
             <group
-                position={[castle.posX, castle.posY, castle.posZ]}
-                rotation={[castle.rotX, castle.rotY, castle.rotZ]}
+                position={[castlePos.x, castlePos.y, castlePos.z]}
+                rotation={[castleRot.x, castleRot.y, castleRot.z]}
             >
-                <GroundMist />
                 <PotterIsland position={[0, -5, 0]} scale={1.5} />
                 <PotterCastle position={[0, 2, 0]} />
                 <PotterGate position={[0, 2, 3]} onOpen={handleEnter} />
-                <FloatingCandles />
-                <MarmaladeCat position={[4, 2, 4]} onClick={handleEnter} />
+                <PirateCat onClick={handleEnter} />
                 <ParchmentBanner
-                    position={[-4, 3, 4]}
-                    name="Vaibhav Sharma"
+                    name="Vaibhab Tiwari"
                     title="Web Developer"
-                    onClick={handleEnter}
+                    onClick={handleOpenScroll}
                 />
             </group>
+
+            {/* Magical Resume Scroll - positioned in front of castle */}
+            <MagicalScroll isOpen={scrollOpen} onClose={handleCloseScroll} castlePosition={[castlePos.x, castlePos.y, castlePos.z]} />
 
             {/* Camera flight */}
             <FlightCamera duration={6} onComplete={handleJourneyComplete} />
 
-            {/* OrbitControls - only after journey */}
-            {journeyComplete && (
+            {/* OrbitControls - only after journey and when scroll is closed */}
+            {journeyComplete && !scrollOpen && (
                 <OrbitControls
-                    target={[castle.posX, castle.posY + 3, castle.posZ]}
+                    target={[castlePos.x, castlePos.y + 3, castlePos.z]}
                     enableDamping
                     dampingFactor={0.05}
                 />
             )}
 
             {/* Lighting */}
-            <ambientLight intensity={0.4} color="#c7d2fe" />
-            <directionalLight position={[10, 40, 50]} intensity={1.2} color="#e0e7ff" />
-            <pointLight position={[0, 10, 280]} intensity={1.5} color="#6366f1" distance={100} />
+            <ambientLight intensity={0.8} color="#c7d2fe" />
+            <directionalLight position={[10, 40, 50]} intensity={2.0} color="#e0e7ff" />
+            <pointLight position={[0, 10, 280]} intensity={3.0} color="#818cf8" distance={150} />
         </group>
     );
 }
