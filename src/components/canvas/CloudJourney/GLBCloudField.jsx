@@ -7,6 +7,9 @@ import { useRef, useMemo, Suspense } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF, Clone } from '@react-three/drei';
 
+// Model path with base URL for GitHub Pages
+const CLOUD_MODEL_PATH = `${import.meta.env.BASE_URL}models/Cloud.glb`;
+
 // Single cloud instance with the GLB model
 function CloudModel({
     position = [0, 0, 0],
@@ -18,7 +21,7 @@ function CloudModel({
     const phase = useMemo(() => Math.random() * Math.PI * 2, []);
 
     // Load the cloud model from public folder
-    const { scene } = useGLTF('/models/Cloud.glb');
+    const { scene } = useGLTF(CLOUD_MODEL_PATH);
 
     // Clone materials for solid clouds
     const clonedScene = useMemo(() => {

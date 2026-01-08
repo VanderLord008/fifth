@@ -7,6 +7,9 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 
+// Model path with base URL for GitHub Pages
+const MODEL_PATH = `${import.meta.env.BASE_URL}models/a_red-haired_pirate_cat_on_a_chair.glb`;
+
 export default function PirateCat({ onClick }) {
     const groupRef = useRef();
     const [isHovered, setIsHovered] = useState(false);
@@ -21,7 +24,7 @@ export default function PirateCat({ onClick }) {
     const catScale = 1.5;
 
     // Load the GLB model
-    const { scene } = useGLTF('/models/a_red-haired_pirate_cat_on_a_chair.glb');
+    const { scene } = useGLTF(MODEL_PATH);
 
     // Gentle idle animation
     useFrame((state) => {
@@ -49,4 +52,5 @@ export default function PirateCat({ onClick }) {
     );
 }
 
-useGLTF.preload('/models/a_red-haired_pirate_cat_on_a_chair.glb');
+useGLTF.preload(MODEL_PATH);
+
