@@ -9,6 +9,8 @@ export const SCENES = {
     CASTLE_GATE: 'castleGate',
     GREAT_HALL: 'greatHall',
     PROJECT_WORLD: 'projectWorld',
+    CASTLE_PREVIEW: 'castlePreview',
+    CASTLE_HALL: 'castleHall',
 };
 
 /**

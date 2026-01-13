@@ -7,36 +7,74 @@ import './index.css'
 import LoadingScene from './components/scenes/LoadingScene'
 import { CloudJourneyScene } from './components/canvas/CloudJourney'
 
+// Castle preview - for testing the three castle options
+import CastlePreviewScene from './components/canvas/CastlePreviewScene'
+
+// Castle Hall with portals
+import { CastleHallScene } from './components/canvas/CastleHall'
+
 // UI components
 import LoadingOverlay from './components/ui/LoadingOverlay'
 
 function App() {
-  const { currentScene } = usePortfolioStore()
+  const { currentScene, setScene } = usePortfolioStore()
+
+  // Quick toggle keys
+  const handleKeyDown = (e) => {
+    if (e.key === 'p' || e.key === 'P') {
+      setScene(currentScene === SCENES.CASTLE_PREVIEW ? SCENES.CLOUD_JOURNEY : SCENES.CASTLE_PREVIEW)
+    }
+    if (e.key === 'h' || e.key === 'H') {
+      setScene(currentScene === SCENES.CASTLE_HALL ? SCENES.CLOUD_JOURNEY : SCENES.CASTLE_HALL)
+    }
+  }
 
   return (
-    <>
-      {/* 3D Canvas */}
-      <div className="canvas-container">
-        <Canvas
-          camera={{ position: [0, 0, 5], fov: 75 }}
-          gl={{ antialias: true, alpha: false }}
-          dpr={[1, 2]}
-        >
-          <Suspense fallback={null}>
-            {/* Scene content based on currentScene */}
-            {currentScene === SCENES.LOADING && <LoadingScene />}
+    <div onKeyDown={handleKeyDown} tabIndex={0} style={{ outline: 'none', width: '100%', height: '100vh' }}>
+      {/* Castle Preview Mode - separate canvas */}
+      {currentScene === SCENES.CASTLE_PREVIEW && <CastlePreviewScene />}
 
-            {/* Cloud Journey now includes Castle Gate */}
-            {(currentScene === SCENES.CLOUD_JOURNEY || currentScene === SCENES.CASTLE_GATE) && <CloudJourneyScene />}
-          </Suspense>
-        </Canvas>
-      </div>
+      {/* Castle Hall with Portals - separate canvas */}
+      {currentScene === SCENES.CASTLE_HALL && <CastleHallScene />}
+
+      {/* Regular scenes */}
+      {currentScene !== SCENES.CASTLE_PREVIEW && currentScene !== SCENES.CASTLE_HALL && (
+        <div className="canvas-container">
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 75 }}
+            gl={{ antialias: true, alpha: false }}
+            dpr={[1, 2]}
+          >
+            <Suspense fallback={null}>
+              {/* Scene content based on currentScene */}
+              {currentScene === SCENES.LOADING && <LoadingScene />}
+
+              {/* Cloud Journey now includes Castle Gate */}
+              {(currentScene === SCENES.CLOUD_JOURNEY || currentScene === SCENES.CASTLE_GATE) && <CloudJourneyScene />}
+            </Suspense>
+          </Canvas>
+        </div>
+      )}
 
       {/* UI Overlays */}
       <LoadingOverlay />
-    </>
+
+      {/* Preview mode hint */}
+      <div style={{
+        position: 'fixed',
+        bottom: 10,
+        left: 10,
+        background: 'rgba(0,0,0,0.7)',
+        color: 'white',
+        padding: '8px 12px',
+        borderRadius: 4,
+        fontSize: 12,
+        zIndex: 1000,
+      }}>
+        Press <strong>P</strong> for Castle Preview | <strong>H</strong> for Portal Hall
+      </div>
+    </div>
   )
 }
 
 export default App
-

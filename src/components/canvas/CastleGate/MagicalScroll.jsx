@@ -190,9 +190,9 @@ export default function MagicalScroll({ isOpen, onClose, castlePosition = [0, 1,
     // Leva debug controls
     const { posX, posY, posZ, rotX, rotY, rotZ, scrollScale, scrollWidth, scrollHeight } = useControls('Magical Scroll', {
         position: folder({
-            posX: { value: 0, min: -20, max: 20, step: 0.1 },
-            posY: { value: 4, min: -10, max: 20, step: 0.1 },
-            posZ: { value: 241, min: 200, max: 260, step: 1 },
+            posX: { value: -0.1, min: -20, max: 20, step: 0.1 },
+            posY: { value: 4.0, min: -10, max: 20, step: 0.1 },
+            posZ: { value: 244, min: 200, max: 280, step: 1 },
         }),
         rotation: folder({
             rotX: { value: -3.14, min: -Math.PI, max: Math.PI, step: 0.01 },
@@ -200,7 +200,7 @@ export default function MagicalScroll({ isOpen, onClose, castlePosition = [0, 1,
             rotZ: { value: -3.14, min: -Math.PI, max: Math.PI, step: 0.01 },
         }),
         size: folder({
-            scrollScale: { value: 1.5, min: 0.5, max: 3, step: 0.1 },
+            scrollScale: { value: 1.0, min: 0.5, max: 3, step: 0.1 },
             scrollWidth: { value: 7, min: 3, max: 12, step: 0.5 },
             scrollHeight: { value: 9, min: 4, max: 15, step: 0.5 },
         }),

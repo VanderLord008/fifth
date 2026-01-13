@@ -1,11 +1,12 @@
 /**
  * 🏴‍☠️ Pirate Cat - Red-haired pirate cat on a chair GLB model
- * No debug controls - hardcoded position from user's settings
+ * With Leva debug controls for position, rotation, and scale
  */
 
 import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
+import { useControls, folder } from 'leva';
 
 // Model path with base URL for GitHub Pages
 const MODEL_PATH = `${import.meta.env.BASE_URL}models/a_red-haired_pirate_cat_on_a_chair.glb`;
@@ -14,14 +15,20 @@ export default function PirateCat({ onClick }) {
     const groupRef = useRef();
     const [isHovered, setIsHovered] = useState(false);
 
-    // Hardcoded position (from user's manual settings)
-    const posX = -7.7;
-    const posY = 0.4;
-    const posZ = 4.0;
-    const rotX = 0;
-    const rotY = -1.0;
-    const rotZ = 0;
-    const catScale = 1.5;
+    // Leva debug controls
+    const { posX, posY, posZ, rotX, rotY, rotZ, catScale } = useControls('Pirate Cat', {
+        position: folder({
+            posX: { value: -3.9, min: -20, max: 20, step: 0.1 },
+            posY: { value: -1.5, min: -10, max: 10, step: 0.1 },
+            posZ: { value: -0.5, min: -20, max: 20, step: 0.1 },
+        }),
+        rotation: folder({
+            rotX: { value: 0, min: -Math.PI, max: Math.PI, step: 0.01 },
+            rotY: { value: -1.0, min: -Math.PI, max: Math.PI, step: 0.01 },
+            rotZ: { value: 0, min: -Math.PI, max: Math.PI, step: 0.01 },
+        }),
+        catScale: { value: 0.7, min: 0.1, max: 5, step: 0.1 },
+    });
 
     // Load the GLB model
     const { scene } = useGLTF(MODEL_PATH);
@@ -53,4 +60,3 @@ export default function PirateCat({ onClick }) {
 }
 
 useGLTF.preload(MODEL_PATH);
-

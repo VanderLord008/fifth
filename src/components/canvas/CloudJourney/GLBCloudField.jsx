@@ -23,16 +23,24 @@ function CloudModel({
     // Load the cloud model from public folder
     const { scene } = useGLTF(CLOUD_MODEL_PATH);
 
-    // Clone materials for solid clouds
+    // Clone materials for solid clouds with castle theme colors
     const clonedScene = useMemo(() => {
         const clone = scene.clone(true);
+        // Castle cloud colors: dusty rose, soft pink, mauve, light gray
+        const cloudColors = [0xc9a0a0, 0xd0c5c5, 0xa08090, 0xc08585];
+        const colorIndex = Math.floor(Math.random() * cloudColors.length);
+
         clone.traverse((child) => {
             if (child.isMesh && child.material) {
                 child.material = child.material.clone();
-                // Solid clouds - no transparency
+                // Solid clouds with castle pink/rose palette
                 child.material.transparent = false;
                 child.material.opacity = 1.0;
                 child.material.depthWrite = true;
+                // Apply random castle cloud color
+                child.material.color.setHex(cloudColors[colorIndex]);
+                child.material.emissive.setHex(0x2a1520); // Subtle warm glow
+                child.material.emissiveIntensity = 0.1;
             }
         });
         return clone;
