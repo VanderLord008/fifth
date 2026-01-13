@@ -175,17 +175,17 @@ export default function ParchmentBanner({
     // Leva debug controls
     const { posX, posY, posZ, rotX, rotY, rotZ, bannerScale, windStrength } = useControls('Banner', {
         position: folder({
-            posX: { value: 3.5, min: -20, max: 20, step: 0.1 },
-            posY: { value: -0.9, min: -10, max: 15, step: 0.1 },
-            posZ: { value: -0.5, min: -20, max: 20, step: 0.1 },
+            posX: { value: 6.0, min: -20, max: 20, step: 0.1 },
+            posY: { value: -0.2, min: -10, max: 15, step: 0.1 },
+            posZ: { value: -2.2, min: -20, max: 20, step: 0.1 },
         }),
         rotation: folder({
             rotX: { value: 0, min: -Math.PI, max: Math.PI, step: 0.01 },
             rotY: { value: 0.03, min: -Math.PI, max: Math.PI, step: 0.01 },
             rotZ: { value: 0, min: -Math.PI, max: Math.PI, step: 0.01 },
         }),
-        bannerScale: { value: 0.5, min: 0.2, max: 3, step: 0.1 },
-        windStrength: { value: 0.15, min: 0, max: 0.5, step: 0.01 },
+        bannerScale: { value: 2.0, min: 0.2, max: 3, step: 0.1 },
+        windStrength: { value: 0.19, min: 0, max: 0.5, step: 0.01 },
     });
 
     // Create subdivided geometry for cloth simulation
