@@ -11,6 +11,7 @@ export const SCENES = {
     PROJECT_WORLD: 'projectWorld',
     CASTLE_PREVIEW: 'castlePreview',
     CASTLE_HALL: 'castleHall',
+    DOOR_PORTAL: 'doorPortal',
 };
 
 /**

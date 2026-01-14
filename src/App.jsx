@@ -13,6 +13,9 @@ import CastlePreviewScene from './components/canvas/CastlePreviewScene'
 // Castle Hall with portals
 import { CastleHallScene } from './components/canvas/CastleHall'
 
+// Door Portal scene
+import { DoorPortalScene } from './components/canvas/CastleDoor'
+
 // UI components
 import LoadingOverlay from './components/ui/LoadingOverlay'
 
@@ -27,7 +30,14 @@ function App() {
     if (e.key === 'h' || e.key === 'H') {
       setScene(currentScene === SCENES.CASTLE_HALL ? SCENES.CLOUD_JOURNEY : SCENES.CASTLE_HALL)
     }
+    if (e.key === 'd' || e.key === 'D') {
+      setScene(currentScene === SCENES.DOOR_PORTAL ? SCENES.CLOUD_JOURNEY : SCENES.DOOR_PORTAL)
+    }
   }
+
+  // Scenes that use their own Canvas
+  const separateCanvasScenes = [SCENES.CASTLE_PREVIEW, SCENES.CASTLE_HALL, SCENES.DOOR_PORTAL];
+  const usesSeparateCanvas = separateCanvasScenes.includes(currentScene);
 
   return (
     <div onKeyDown={handleKeyDown} tabIndex={0} style={{ outline: 'none', width: '100%', height: '100vh' }}>
@@ -37,8 +47,11 @@ function App() {
       {/* Castle Hall with Portals - separate canvas */}
       {currentScene === SCENES.CASTLE_HALL && <CastleHallScene />}
 
+      {/* Door Portal Scene - separate canvas */}
+      {currentScene === SCENES.DOOR_PORTAL && <DoorPortalScene />}
+
       {/* Regular scenes */}
-      {currentScene !== SCENES.CASTLE_PREVIEW && currentScene !== SCENES.CASTLE_HALL && (
+      {!usesSeparateCanvas && (
         <div className="canvas-container">
           <Canvas
             camera={{ position: [0, 0, 5], fov: 75 }}
@@ -71,7 +84,7 @@ function App() {
         fontSize: 12,
         zIndex: 1000,
       }}>
-        Press <strong>P</strong> for Castle Preview | <strong>H</strong> for Portal Hall
+        <strong>P</strong> Castle Preview | <strong>H</strong> Portal Hall | <strong>D</strong> Door Portal
       </div>
     </div>
   )

@@ -2,15 +2,18 @@ import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useCursor } from '@react-three/drei';
 import * as THREE from 'three';
+import PortalEffect from './PortalEffect';
 
 /**
  * Gate - Animated entrance with portcullis and oak doors
  * Click to trigger open animation sequence
+ * Shows magical portal when doors open
  */
 export default function Gate({ position = [0, 0, 0], onOpen }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [animationPhase, setAnimationPhase] = useState('closed'); // closed, portcullis, doors, open
+    const [portalVisible, setPortalVisible] = useState(false);
 
     const portcullisRef = useRef();
     const leftDoorRef = useRef();
@@ -27,6 +30,7 @@ export default function Gate({ position = [0, 0, 0], onOpen }) {
             if (portcullisRef.current.position.y >= 4) {
                 portcullisRef.current.position.y = 4;
                 setAnimationPhase('doors');
+                setPortalVisible(true); // Show portal when portcullis is up
             }
         }
 
@@ -65,6 +69,16 @@ export default function Gate({ position = [0, 0, 0], onOpen }) {
 
     return (
         <group position={position}>
+            {/* Magical Portal - behind the gates */}
+            <PortalEffect
+                position={[0, 2, -0.5]}
+                rotation={[0, 0, 0]}
+                scale={2}
+                colorStart="#8b5cf6"  // Purple
+                colorEnd="#f0abfc"    // Light pink
+                visible={portalVisible}
+            />
+
             {/* Gate archway frame */}
             <mesh position={[0, 2, -0.1]}>
                 <boxGeometry args={[3.2, 4.5, 0.3]} />
